@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include header %>
+    </header>
+
+    <main>
+        <div class="jumbotron">
+            <p> Last ItemID Scanned: <%= lastid %> </p>
+            <table class="table-condensed">
+                <tr>
+                    <td>
+                       Icon:
+                    </td>
+                    <td>
+                        Name: 
+                    </td>
+                    <td>
+                        Profit (gold):
+                    </td>
+                    <td>
+                        IndexedAt: 
+                    </td>
+                    <td>
+                        Buy: 
+                    </td>
+                    <td>
+                        Sell: 
+                    </td>
+                  
+                    <td>
+                        Tools: 
+                    </td>
+                </tr>
+              
+                <% table.forEach(function(item) { %>
+                    <tr id="item-<%= item.id %>">
+                        <td><img src="<%= item.icon %>" style="width: 64px; height: 64px;"></td>
+                        <td><a href="http://www.gw2spidy.com/item/<%= item.id %>"><%= item.name %></a></td>
+                        <td id="itemspread-<%= item.id %>"><%= item.spread / 10000 %></td>
+                        <td id="itemindexat-<%= item.id %>"><%=  moment(item.indexedat).fromNow() %></td>
+                        <td id="itembuy-<%= item.id %>"><%= item.buy / 10000 %></td>
+                        <td id="itemsell-<%= item.id %>"><%= item.sell / 10000 %></td>
+                        <td><a onclick="update_table(<%= item.id %>)"> Update Now </a></td>
+                    </tr>
+                <% }); %>                 
+           </table>   
+           <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
+           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.js"></script>
+           <script type="text/javascript">
+               function update_table(id) {
+                  $.getJSON( "/scan/" + id , function( data ) { 
+                      if(data.error)  
+                         alert(data.error);
+                      else {
+                          $("#itemspread-" + id).text(data.spread / 10000);
+                          $("#itembuy-" + id).text(data.buy / 10000);
+                          $("#itemsell-" + id).text(data.sell / 10000);
+                          $("#itemindexat-" + id).text(moment(data.indexedat).fromNow());
+                      }
+                  });
+               }
+           </script>
+        </div>
+    </main>
+    <footer>
+        <% include footer %>
+    </footer>
+    
+</body>
+</html>
