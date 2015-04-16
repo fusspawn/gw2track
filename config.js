@@ -1,4 +1,4 @@
 module.exports = {
-   port: 8080,
-   num_crawlers: 100
+   port: 80,
+   num_crawlers: 1000
 }
