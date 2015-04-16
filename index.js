@@ -1,4 +1,4 @@
-
+var config  = require("./config.js");
 var request = require("request");
 var _ = require("async");
 var util = require("util");
@@ -12,7 +12,7 @@ var LAST_SCANNED_ID = 0;
 function get_api(extras, callback) {
     request(api_url + extras, function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        callback(JSON.parse(body)); // Show the HTML for the Google homepage.
+        callback(JSON.parse(body));
       } else {
         callback(null);
       }
@@ -38,7 +38,7 @@ var scan_item = function(id, callback)
                               if(idata === null)  { callback(null); return; }
                               profitdb.update({ id: id}, {id: id,
                                                name: idata.name,
-                                               spread: spread, 
+                                               spread: spread,
                                                indexedat: new Date(),
                                                buy: data.buys.unit_price,
                                                sell: data.sells.unit_price,
@@ -47,7 +47,7 @@ var scan_item = function(id, callback)
                                    console.log("scanned: " + id);
                                    callback({id: id,
                                                name: idata.name,
-                                               spread: spread, 
+                                               spread: spread,
                                                indexedat: new Date(),
                                                buy: data.buys.unit_price,
                                                sell: data.sells.unit_price,
@@ -64,7 +64,7 @@ var scan_item = function(id, callback)
            } catch(e) { callback(null); }
 }
 
-var run = function(run_cb) 
+var run = function(run_cb)
 {
      console.log("aquiring all items");
      get_api("/items", function(ids) {
@@ -87,10 +87,10 @@ var run = function(run_cb)
                      var spread = data.sells.unit_price - data.buys.unit_price;
                      if(spread > min_spread) {
                         get_api("/items/" + id, function(idata) {
-                              if(idata === null)  { callback(null); return; }                          
+                              if(idata === null)  { callback(null); return; }
                               profitdb.update({ id: id}, {id: id,
                                                name: idata.name,
-                                               spread: spread, 
+                                               spread: spread,
                                                indexedat: new Date(),
                                                buy: data.buys.unit_price,
                                                sell: data.sells.unit_price,
@@ -118,13 +118,13 @@ var run = function(run_cb)
 }
 
 run(function() {
-   
+
 });
 
 setInterval(function() {
-  run(function() {    
-  });  
-}, 1000 * 60 * 60); 
+  run(function() {
+  });
+}, 1000 * 60 * 60);
 
 var express = require('express');
 var app = express();
@@ -136,8 +136,8 @@ app.get('/', function(req, res) {
    profitdb.find({}).sort({spread: -1}).limit(100).exec(function(err, docs) {
      if(err)
        res.send(error);
-     else 
-       res.render("index", {table: docs, lastid: LAST_SCANNED_ID, moment: moment});     
+     else
+       res.render("index", {table: docs, lastid: LAST_SCANNED_ID, moment: moment});
    });
 });
 
@@ -161,5 +161,5 @@ app.get("/scan/:id", function(req, res) {
     });
 })
 
-app.listen(8080);
-console.log("server running");
+app.listen(config.port);
+console.log("server running on port " + config.port);
