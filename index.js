@@ -132,7 +132,7 @@ run(function() {
 setInterval(function() {
   run(function() {
   });
-}, 1000 * 60 * 60);
+}, 1000 * 60 * 60 * 2);
 
 var express = require('express');
 var app = express();
