@@ -18,49 +18,58 @@
                        Icon:
                     </td>
                     <td>
-                        Name: 
+                        Name:
                     </td>
                     <td>
                         Profit (gold):
                     </td>
                     <td>
-                        IndexedAt: 
+                        IndexedAt:
                     </td>
                     <td>
-                        Buy: 
+                        Buy:
                     </td>
                     <td>
-                        Sell: 
+                        Sell:
                     </td>
-                  
+
                     <td>
-                        Tools: 
+                        Tools:
                     </td>
                 </tr>
-              
+
                 <% table.forEach(function(item) { %>
                     <tr id="item-<%= item.id %>">
                         <td><img src="<%= item.icon %>" style="width: 64px; height: 64px;"></td>
                         <td><a href="http://www.gw2spidy.com/item/<%= item.id %>"><%= item.name %></a></td>
-                        <td id="itemspread-<%= item.id %>"><%= item.spread / 10000 %></td>
+                        <td id="itemspread-<%= item.id %>"><%= format_coins(item.spread) %></td>
                         <td id="itemindexat-<%= item.id %>"><%=  moment(item.indexedat).fromNow() %></td>
-                        <td id="itembuy-<%= item.id %>"><%= item.buy / 10000 %></td>
-                        <td id="itemsell-<%= item.id %>"><%= item.sell / 10000 %></td>
+                        <td id="itembuy-<%= item.id %>"><%= format_coins(item.buy)  %></td>
+                        <td id="itemsell-<%= item.id %>"><%= format_coins(item.sell) %></td>
                         <td><a onclick="update_table(<%= item.id %>)"> Update Now </a></td>
                     </tr>
-                <% }); %>                 
-           </table>   
+                <% }); %>
+           </table>
            <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.js"></script>
            <script type="text/javascript">
+
+               function format_coins(m) {
+                   var copper = m % 100;
+                   m = (m - copper) / 100;
+                   var silver = m % 100;
+                   var gold = (m - silver) / 100;
+                   return gold + "g " + silver + "s " + copper + "c";
+               }
+
                function update_table(id) {
-                  $.getJSON( "/scan/" + id , function( data ) { 
-                      if(data.error)  
+                  $.getJSON( "/scan/" + id , function( data ) {
+                      if(data.error)
                          alert(data.error);
                       else {
-                          $("#itemspread-" + id).text(data.spread / 10000);
-                          $("#itembuy-" + id).text(data.buy / 10000);
-                          $("#itemsell-" + id).text(data.sell / 10000);
+                          $("#itemspread-" + id).text(format_coins(data.spread));
+                          $("#itembuy-" + id).text(format_coins(data.buy));
+                          $("#itemsell-" + id).text(format_coins(data.sell));
                           $("#itemindexat-" + id).text(moment(data.indexedat).fromNow());
                       }
                   });
@@ -71,6 +80,6 @@
     <footer>
         <% include footer %>
     </footer>
-    
+
 </body>
 </html>

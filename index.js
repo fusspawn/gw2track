@@ -19,6 +19,14 @@ function get_api(extras, callback) {
     });
 }
 
+function format_coins(m) {
+    var copper = m % 100;
+    m = (m - copper) / 100;
+    var silver = m % 100;
+    var gold = (m - silver) / 100;
+    return gold + "g " + silver + "s " + copper + "c";
+}
+
 var scan_item = function(id, callback)
 {
    console.log("scanning " + id);
@@ -137,7 +145,10 @@ app.get('/', function(req, res) {
      if(err)
        res.send(error);
      else
-       res.render("index", {table: docs, lastid: LAST_SCANNED_ID, moment: moment});
+       res.render("index", {table: docs,
+          lastid: LAST_SCANNED_ID,
+          moment: moment,
+          format_coins: format_coins});
    });
 });
 
@@ -147,7 +158,10 @@ app.get("/custom/:gold", function(req, res) {
         if(err)
           throw err;
         else {
-          res.render("index", {table: docs, lastid: LAST_SCANNED_ID, moment: moment});
+          res.render("index", {table: docs,
+             lastid: LAST_SCANNED_ID,
+             moment: moment,
+             format_coins: format_coins});
         }
     });
 });
