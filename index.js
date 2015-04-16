@@ -126,13 +126,13 @@ var run = function(run_cb)
 }
 
 run(function() {
-
+	
+	setInterval(function() {
+  		run(function() {
+  		});
+	}, 1000 * 60 * 60 * 2);
 });
 
-setInterval(function() {
-  run(function() {
-  });
-}, 1000 * 60 * 60 * 2);
 
 var express = require('express');
 var app = express();
